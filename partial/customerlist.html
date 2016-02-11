@@ -1,0 +1,75 @@
+<style type="text/css">
+
+    .sortorder:after {
+
+        content: '\25b2';
+
+    }
+
+    .sortorder.reverse:after {
+
+        content: '\25bc';
+
+    }
+
+</style>
+
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <h1>
+            Customer List
+            <!--<small>advanced tables</small>-->
+        </h1>
+        <div class="searchbox"><span>Search:</span> <input ng-model="searchkey" class="searchinput"></div>
+        <!--<ol class="breadcrumb">
+            <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li><a href="#">Tables</a></li>
+            <li class="active">Data tables</li>
+        </ol>-->
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="row">
+            <!-- left column -->
+            <div class="col-md-12">
+                <!-- general form elements -->
+                <div class="box box-primary">
+                    <!-- <div class="box-header with-border">
+                        <h3 class="box-title">Quick Example</h3>
+                    </div>--><!-- /.box-header -->
+                    <table id="example1" class="table table-bordered table-striped">
+                        <thead>
+                        <tr>
+                            <th><a href="javascript:void(0);" ng-click="order('fullname')">Name</a><span class="sortorder" ng-show="predicate === 'fullname'" ng-class="{reverse:reverse}"></span></th>
+                            <th><a href="javascript:void(0);" ng-click="order('mail')">Email</a><span class="sortorder" ng-show="predicate === 'mail'" ng-class="{reverse:reverse}"></span></th>
+                            <th><a href="javascript:void(0);" ng-click="order('phone')">Phone</a><span class="sortorder" ng-show="predicate === 'phone'" ng-class="{reverse:reverse}"></span></th>
+                            <th><a href="javascript:void(0);" ng-click="order('address')">Address</a><span class="sortorder" ng-show="predicate === 'address'" ng-class="{reverse:reverse}"></span></th>
+                            <th><a href="javascript:void(0);" ng-click="order('created')">Sign Up Date</a><span class="sortorder" ng-show="predicate === 'created'" ng-class="{reverse:reverse}"></span></th>
+                            <th>Plan</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="item in userlistP | orderBy:predicate:reverse | filter:search">
+                            <td>{{item.fullname}}</td>
+                            <td>{{item.mail}}</td>
+                            <td>{{item.phone}}</td>
+                            <td>{{item.address}}, {{item.city}}, {{item.state}}, {{item.zip}}</td>
+                            <td>{{item.created*1000 | date:'MMM-d-yyyy hh:mm a'}}</td>
+                            <td>---</td>
+                        </tr>
+                        </tbody>
+
+                    </table>
+                    <uib-pagination total-items="userlist.length" ng-model="currentPage" items-per-page="perPage" max-size="4" ng-change="pageChanged()"></uib-pagination>
+
+                </div><!-- /.box -->
+
+
+
+            </div>
+
+        </div>   <!-- /.row -->
+    </section><!-- /.content -->
+</div>

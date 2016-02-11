@@ -1,0 +1,64 @@
+<div>
+	<form angular-validator-submit="contactus()" name="signUpForm" class="form-horizontal" novalidate angular-validator>
+		<div class="form-group">
+			<label>First Name </label>
+			<input type="text"  placeholder="First Name" name="fname"
+				   validate-on="submission"
+				   class = "form-control"
+				   ng-model = "form.fname"
+				   required-message="'First Name cannot be blank.'"
+				   required>
+		</div>
+
+		<div class="form-group">
+			<label>Last Name </label>
+			<input type="text"  placeholder="Last Name" name="lname"
+				   validate-on="submission"
+				   class = "form-control"
+				   ng-model = "form.lname"
+				   required-message="'Last Name cannot be blank.'"
+				   required>
+		</div>
+
+		<div class="form-group">
+			<label>Are you interested in classes? </label>
+			<input type="radio" name="is_interested" ng-model="form.is_interested" value="1"><strong>&nbsp;&nbsp;Yes</strong>
+			<input type="radio" name="is_interested" ng-model="form.is_interested" value="0"><strong>&nbsp;&nbsp;No</strong>
+		</div>
+
+		<div class="form-group">
+			<label>How many seats will you be taking?</label>
+			<select name="seat_no" ng-model="form.seat_no"
+					required-message="'This field cannot be blank.'"
+					required>
+				<option value="">Select One</option>
+				<option ng-repeat="item in classN" value="{{item}}">{{item}}</option>
+				<option value="more">More</option>
+			</select>
+
+		</div>
+
+		<div class="form-group">
+			<input ng-show="form.seat_no == 'more'" type="text"  placeholder="How many seats will you be taking? (numbers only)" name="seat_no1"
+				   validate-on="submission"
+				   class = "form-control"
+				   ng-model = "form.seat_no1"
+					>
+		</div>
+
+		<div class="form-group">
+			<label>When would you like to attend a class? </label>
+			<select name="class_time" ng-model="form.class_time"
+					required-message="'This field cannot be blank.'"
+					required>
+				<option value="">Select One</option>
+				<option ng-repeat="item in monthList" value="{{item.id}}">{{item.name}}</option>
+			</select>
+		</div>
+
+
+		<input type="submit" value="Submit"  class="registerbtn"/>
+
+	</form>
+</div>
+

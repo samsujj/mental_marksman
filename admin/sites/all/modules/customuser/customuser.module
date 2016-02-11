@@ -1,0 +1,240 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: debasis
+ * Date: 16/6/15
+ * Time: 12:04 AM
+ */
+
+function customuser_permission() {
+    return array(
+        'ngmodule anonymous' => array(
+            'title' => t('Anonymous Actions '),
+            'description' => t('Anonymous Actions.'),
+        ),
+        'ngmodule loggedin' => array(
+            'title' => t('Logged in Actions '),
+            'description' => t('Logged in Actions.'),
+        ),
+        'ngmodule anonymous' => array(
+            'title' => t('Admin Actions '),
+            'description' => t('Admin Actions.'),
+        ),
+
+    );
+}
+
+
+function customuser_menu() {
+    $items = array();
+    $items['customuser/register'] = array(
+        'title' => 'register',
+        'page callback' => 'register',
+        'access callback' => TRUE,
+        'access arguments' => array('Anonymous Actions.'),
+        'expanded' => TRUE,
+        //'type'=>MENU_NORMAL_ITEM,
+    );
+
+    $items['customuser/login'] = array(
+        'title' => 'register',
+        'page callback' => 'login',
+        'access callback' => TRUE,
+        'access arguments' => array('Anonymous Actions.'),
+        'expanded' => TRUE,
+        //'type'=>MENU_NORMAL_ITEM,
+    );
+
+    $items['contactus'] = array(
+        'title' => 'contactus',
+        'page callback' => 'contactus',
+        'access callback' => TRUE,
+        'access arguments' => array('Anonymous Actions.'),
+        'expanded' => TRUE,
+        //'type'=>MENU_NORMAL_ITEM,
+    );
+
+    $items['alluserlist'] = array(
+        'title' => 'alluserlist',
+        'page callback' => 'alluserlist',
+        'access callback' => TRUE,
+        'access arguments' => array('Anonymous Actions.'),
+        'expanded' => TRUE,
+        //'type'=>MENU_NORMAL_ITEM,
+    );
+
+    return $items;
+}
+
+function register(){
+
+
+    $user = user_load_by_mail(trim(@$_POST['email']));
+    if(@$user->uid>0){
+
+        $data['status'] = 'error';
+        $data['msg'] = 'Email already exists..';
+        echo json_encode($data);
+        return;
+
+    }
+
+    $roles = array(
+        DRUPAL_AUTHENTICATED_RID => 'authenticated user',
+         5 => 'generaluser',
+    );
+
+    $new_user = array(
+        'name' => $_POST['email'],
+        'pass' => $_POST['password'],
+        'mail' => $_POST['email'],
+        'status' => 0,
+        'roles' => $roles,
+        );
+
+    $account=user_save('', $new_user);
+    if($account->uid>0){
+        $class_attend_when = '';
+        $class_attend_how_many = '';
+        if($_POST['live_attendent'] == 1){
+            $class_attend_when = $_POST['when'];
+            $class_attend_how_many = $_POST['how_many'];
+        }
+        $query = db_insert('custom_user')->fields(array('userid', 'fullname', 'email','phone','address','city','state', 'zip', 'is_class_attend','class_attend_when','class_attend_how_many','is_other_tarining','is_own_firearm', 'practice_shooting', ' 	is_access_shooting_facility','billing_zip','customer_id','is_active'));
+        $query->values(array($account->uid,@$_POST['name'],@$_POST['email'],@$_POST['phone'],@$_POST['address'],@$_POST['city'],@$_POST['state'],@$_POST['zip'],@$_POST['live_attendent'],$class_attend_when,$class_attend_how_many,@$_POST['other_training'],@$_POST['own_firearm'],@$_POST['practise_shooting'],@$_POST['shooting_facility'],@$_POST['bill_zip'],'',1));
+
+        $query->execute();
+    }
+
+    $op = 'register_pending_approval';
+    $status = _user_mail_notify($op, $account);
+    drupal_mail('user', 'register_admin_created', $_POST['email'], NULL, array('account' => $account), variable_get('site_mail', 'support@test.com'));
+    $data['status'] = 'success';
+
+    echo json_encode($data);
+    return;
+}
+
+function login(){
+    $user = user_load_by_mail(trim(@$_POST['email']));
+    if($user==''){
+
+        $data['status'] = 'error';
+        $data['msg'] = 'Email does not exists..';
+        echo json_encode($data);
+        return;
+
+    }
+//var_dump($user->name);
+    $x= user_authenticate(@$user->name,@$_POST['password']);
+    if($x>0 && $user->status==1) {
+        $userarr['id']=$user->uid;
+        $userarr['roles']=$user->roles;
+        $data['status'] = 'success';
+        $data['userdetails'] = $userarr;
+        echo json_encode($data);
+        return;
+    }
+    else {
+        if($x>0 && $user->status==0){
+
+            $data['status'] = 'error';
+            $data['msg'] = 'User is either not activated by admin yet or blocked !';
+            echo json_encode($data);
+            return;
+
+        }
+        $data['status'] = 'error';
+        $data['msg'] = 'Invalid access';
+        echo json_encode($data);
+    };
+
+}
+
+
+function contactus(){
+    $no_of_class = $_POST['seat_no'];
+    if($no_of_class == 'more')
+        $no_of_class = intval($_POST['seat_no1']);
+
+    $query = db_insert('contactus')->fields(array('firstname','lastname','is_interested','no_of_class','month_of_class','posted_time'));
+    $query->values(array(@$_POST['fname'],@$_POST['lname'],@$_POST['is_interested'],$no_of_class,@$_POST['class_time'],time()));
+    $query->execute();
+}
+
+function alluserlist(){
+
+    $query = db_select('users', 'u');
+    $query->join('custom_user', 'ut', 'u.uid = ut.userid');
+    $query->fields('u', array('uid','name','mail','status','created'),'ut',array('fullname','phone','address','city','state','zip'));
+    $query->fields('ut',array('fullname','phone','address','city','state','zip'));
+    // ->condition('u.name', '%' . db_like('john') . '%', 'LIKE')
+    //->condition('de.domain_id', 25, '=')
+    //->range(0, 20);
+    $result = $query->execute();
+
+    while($record = $result->fetchAssoc()) {
+        //print_r($record);
+        $record['createdsince']=time_elapsed_string($record['created']);
+        //// echo "<br>";
+        $thisuser = user_load($record['uid']);
+        // var_dump($thisuser);
+        $record['rolearr']=$thisuser->roles;
+        foreach($thisuser->roles as $index=>$val){
+            if($index!=2) $record['roles']=$index;
+        }
+        $picture=$thisuser->picture;
+        //$record['picture']=$picture['uri'];
+        if(isset($picture->uri))$record['picture']= image_style_url('thumbnail', $picture->uri);
+        else $record['picture']='';
+        //;
+        // echo "<br>";
+        if(isset($_REQUEST['role'])){
+
+            if (array_key_exists(@$_REQUEST['role'],$thisuser->roles)) $userlist[]=$record;
+        }
+        else{
+            $userlist[]=$record;
+        }
+    }
+
+    echo json_encode(@$userlist);
+
+}
+
+function time_elapsed_string($ptime)
+{
+    $etime = time() - $ptime;
+
+    if ($etime < 1)
+    {
+        return '0 seconds';
+    }
+
+    $a = array( 365 * 24 * 60 * 60  =>  'year',
+        30 * 24 * 60 * 60  =>  'month',
+        24 * 60 * 60  =>  'day',
+        60 * 60  =>  'hour',
+        60  =>  'minute',
+        1  =>  'second'
+    );
+    $a_plural = array( 'year'   => 'years',
+        'month'  => 'months',
+        'day'    => 'days',
+        'hour'   => 'hours',
+        'minute' => 'minutes',
+        'second' => 'seconds'
+    );
+
+    foreach ($a as $secs => $str)
+    {
+        $d = $etime / $secs;
+        if ($d >= 1)
+        {
+            $r = round($d);
+            return $r . ' ' . ($r > 1 ? $a_plural[$str] : $str) ;
+        }
+    }
+}
+
+

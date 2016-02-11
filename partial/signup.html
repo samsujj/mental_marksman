@@ -1,0 +1,373 @@
+
+   <div class="container-fluid land1a_bannerwrapper">
+	<div class="row">
+	    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+			<img src="images/innerbanner1.png" alt="#">
+        </div>
+    </div>
+</div>
+   
+   <div class="container land1a_bannerbtm">
+	<div class="row">
+    	<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        	<h1>We teach you to make legal, <span>safe decisions</span><a href="javascript:void(0)" class="land1a_joinbtn">Join us Now</a></h1>
+        </div>
+    </div>
+</div>
+      <div class="container-fluid signuptop">
+	<div class="row">
+	    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <h2>Create Account</h2>
+        <h3>Create your Mental Marksmanship account by filling in the fields below and selecting the storage plan that best suits your needs.</h3>
+        <img src="images/signupicon.png" alt="#" style="display:block; margin:0 auto;">
+			
+        </div>
+    </div>
+</div>
+
+
+
+<div class="container signupform">
+	<div class="row">
+	    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <div class="signup-form-wrapper">
+
+			<form angular-validator-submit="register()" name="signUpForm" class="form-horizontal" novalidate angular-validator>
+      
+      <div class="signup-form-left">
+      <label>Account:</label>
+		  <div class="form-group">
+
+			  <input type="text"  placeholder="Name" name="fname" ng-blur="updatename($event)"
+
+					 validate-on="submission"
+
+					 class = "form-control"
+
+					 ng-model = "form.name"
+
+					 required-message="'Name cannot be blank.'"
+
+					 required>
+
+		  </div>
+
+		  <div class="form-group" id="emailgroup">
+
+			  <input type="email" placeholder="Email" name="email"
+
+					 validate-on="blur"
+
+					 class = "form-control"
+
+					 ng-model = "form.email"
+
+					 required-message="'Email cannot be blank.'"
+
+					 invalid-message="'Enter valid email address.'"
+
+					 required>
+
+		  </div>
+
+
+
+		  <div class="form-group">
+
+			  <input type="password"  placeholder="Password" name="password"
+
+
+					 class = "form-control"
+
+					 ng-model = "form.password"
+
+					 validator = "passwordValidator(form.password) === true"
+
+					 invalid-message = "passwordValidator(form.password)"
+
+					 required-message="'Password cannot be blank.'"
+
+					 required>
+
+		  </div>
+
+
+		  <label>Contact:</label>
+		  <div class="form-group">
+
+			  <input type="text"  placeholder="Phone" name="phone"
+
+					 validate-on="blur"
+
+					 class = "form-control"
+
+					 ng-model = "form.phone"
+
+					 required-message="'Phone cannot be blank.'"
+
+					 required>
+
+		  </div>
+		  <div class="form-group">
+
+			  <input type="text"  placeholder="Address" name="address"
+
+					 validate-on="blur"
+
+					 class = "form-control"
+
+					 ng-model = "form.address"
+
+					 required-message="'Address cannot be blank.'"
+
+					 required>
+
+		  </div>
+		  <div class="form-group">
+
+			  <input type="text"  placeholder=" City"  name="city"
+
+					 validate-on="blur"
+
+					 class = "form-control"
+
+					 ng-model = "form.city"
+
+					 required-message="'City cannot be blank.'"
+
+					 required>
+
+		  </div>
+		  <div class="form-group">
+
+			  <input type="text"  placeholder="State" name="state"
+
+					 validate-on="blur"
+
+					 class = "form-control"
+
+					 ng-model = "form.state"
+
+					 required-message="'State cannot be blank.'"
+
+					 required>
+
+		  </div>
+		  <div class="form-group">
+
+			  <input type="text"  placeholder="Zip" name="zip"
+
+					 validate-on="blur"
+
+					 class = "form-control"
+
+					 ng-model = "form.zip"
+
+					 required-message="'Zip cannot be blank.'"
+
+					 required>
+
+		  </div>
+
+		  <div class="form-group">
+			  <label>Have you attended a live Mental Marksmanship Class? </label>
+			  <input type="radio" name="live_attendent" ng-model="form.live_attendent" value="1"><strong>&nbsp;&nbsp;Yes</strong>
+			  <input type="radio" name="live_attendent" ng-model="form.live_attendent" value="0"><strong>&nbsp;&nbsp;No</strong>
+		  </div>
+		  <div class="form-group" ng-show="form.live_attendent == 1">
+			  <input type="text"  placeholder="When?"
+					 class = "form-control"
+					 ng-model = "form.when">
+		  </div>
+		  <div class="form-group" ng-show="form.live_attendent == 1">
+			  <input type="text"  placeholder="How Many?"
+					 class = "form-control"
+					 ng-model = "form.how_many">
+		  </div>
+		  <div class="form-group">
+			  <label>Have to taken any other training?  </label>
+			  <input type="radio" name="other_training" ng-model="form.other_training" value="1"><strong>&nbsp;&nbsp;Yes</strong>
+			  <input type="radio" name="other_training" ng-model="form.other_training" value="0"><strong>&nbsp;&nbsp;No</strong>
+		  </div>
+		  <div class="form-group">
+			  <label>Do you own a firearm? </label>
+			  <input type="radio" name="own_firearm" ng-model="form.own_firearm" value="1"><strong>&nbsp;&nbsp;Yes</strong>
+			  <input type="radio" name="own_firearm" ng-model="form.own_firearm" value="0"><strong>&nbsp;&nbsp;No</strong>
+		  </div>
+		  <div class="form-group">
+
+			  <input type="text"  placeholder="How often do you practice shooting?" name="practise_shooting"
+
+					 validate-on="blur"
+
+					 class = "form-control"
+
+					 ng-model = "form.practise_shooting"
+
+					 required-message="'Practise shooting cannot be blank.'"
+
+					 required>
+
+		  </div>
+		  <div class="form-group">
+			  <label>Do you have access to a shooting facility?</label>
+			  <input type="radio" name="shooting_facility" ng-model="form.shooting_facility" value="1"><strong>&nbsp;&nbsp;Yes</strong>
+			  <input type="radio" name="shooting_facility" ng-model="form.shooting_facility" value="0"><strong>&nbsp;&nbsp;No</strong>
+		  </div>
+
+
+      </div>
+
+
+				<div class="signup-form-right">
+
+					<label>Plan: </label>
+
+					<div class="Plan-div">
+						<strong>$9.97/month - Standard Monthly Account</strong>
+
+						<div class="clear"></div>
+						<div class="clear"></div>
+
+					</div>
+
+					<label>Payment Information:</label>
+
+					<div class="Paymentinfo"><img src="images/sicon2.png"  alt="#"/></div>
+
+					<div class="form-group">
+
+						<input type="text"  placeholder="Name on Card" name="nameoncard"
+
+							   validate-on="blur"
+
+							   class = "form-control"
+
+							   ng-model = "form.nameoncard"
+
+							   required-message="'Name on Card cannot be blank.'"
+
+							   required>
+
+					</div>
+
+
+
+					<select>
+						<option>VISA</option>
+
+						<option>American Express</option>
+
+						<option>Card Type</option>
+					</select>
+					<div class="form-group">
+
+						<input type="text"  placeholder="Card Number" name="card_no"
+
+							   validate-on="blur"
+
+							   class = "form-control"
+
+							   ng-model = "form.card_no"
+
+							   required-message="'Card Number cannot be blank.'"
+
+							   required>
+
+					</div>
+
+
+
+
+					<label>Expiration Date:</label>
+
+					<div class="ExpiryDatediv">
+
+
+
+						<div class="dob_month2 form-group" id="exp_month">
+
+							<select id="UserManager_expmo" name="UserManager[expmo]" class = "dob_month2" validate-on="blur" ng-model = "form.expmo" required-message="'Exp. Month cannot be blank.'" required ng-options="item.name for item in monthList  track by item.id">
+
+								<option value="">Month</option>
+
+							</select>
+
+						</div>
+
+
+
+						<div class="dob_year2 form-group" id="exp_year">
+
+							<select id="UserManager_expyear" name="UserManager[expyear]" class = "dob_year2" validate-on="blur" ng-model = "form.expyear" required-message="'Exp. Month cannot be blank.'" required ng-options="item.name for item in yearList  track by item.id">
+
+								<option value="">Year</option>
+
+							</select>
+
+						</div>
+
+
+
+						<div class="clear"></div>
+
+					</div>
+
+					<div class="form-group" id="cvc">
+
+						<input type="text"  name="cvv" placeholder="Security Code (CVV/CSV)"
+
+							   validate-on="blur"
+
+							   class = "form-control"
+
+							   ng-model = "form.cvv"
+
+							   required-message="'Security Code (CVV/CSV) cannot be blank.'"
+
+							   required>
+
+					</div>
+
+
+
+					<div class="form-group">
+
+						<input type="text"  name="bill_zip" placeholder="Billing Zip Code"
+
+							   validate-on="blur"
+
+							   class = "form-control"
+
+							   ng-model = "form.bill_zip"
+
+							   required-message="'Billing Zip cannot be blank.'"
+
+							   required>
+
+					</div>
+
+
+
+				</div>
+      
+      
+      
+
+      
+      
+      
+      
+      <div class="clear"></div>
+      
+      
+      <input type="submit" value="Create Account"  class="registerbtn"/>
+      
+      </form>
+      
+       </div>
+        </div>
+    </div>
+</div>
+   
+   
