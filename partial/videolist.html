@@ -1,0 +1,66 @@
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <h1>
+            Video List
+            <!--<small>advanced tables</small>-->
+        </h1>
+        <a ui-sref="addvideo">Add Video</a>
+        <!--<ol class="breadcrumb">
+            <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li><a href="#">Tables</a></li>
+            <li class="active">Data tables</li>
+        </ol>-->
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="row">
+            <!-- left column -->
+            <div class="col-md-12">
+                <!-- general form elements -->
+                <div class="box box-primary">
+                    <!-- <div class="box-header with-border">
+                        <h3 class="box-title">Quick Example</h3>
+                    </div>--><!-- /.box-header -->
+                    <table id="example1" class="table table-bordered table-striped">
+                        <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Description</th>
+                            <th>Video</th>
+                            <th>Action</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="item in videolistP">
+                            <td>{{item.title}}</td>
+                            <td>{{item.description}}</td>
+                            <td>
+                                <div id="youtubeBody{{item.id}}" style="margin-bottom:10px; width:300px;" class="embed-responsive embed-responsive-16by9 video-wrapper" >
+                                    <!--<youtube-video class="embed-responsive-item" video-id="item.video_id"></youtube-video>-->
+                                    <img src="https://i.ytimg.com/vi/{{item.video_id}}/mqdefault.jpg" width="100%">
+                                    <div  class="paly_video"  ng-click="showYoutubevdo(item.id,item.video_id)" style="cursor:pointer;">Play Video</div>
+                                </div>
+                            </td>
+                            <td>---</td>
+                      </tr>
+                        </tbody>
+
+                    </table>
+
+                    <div>
+
+                    </div>
+
+                    <uib-pagination total-items="videolist.length" ng-model="currentPage" items-per-page="perPage" max-size="4" ng-change="pageChanged()"></uib-pagination>
+
+                </div><!-- /.box -->
+
+
+
+            </div>
+
+        </div>   <!-- /.row -->
+    </section><!-- /.content -->
+</div>

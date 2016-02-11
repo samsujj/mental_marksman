@@ -7,7 +7,7 @@
 
 /* App Module */
 
-var mentalmarksman = angular.module('mental_marksman', ['ui.router','angularValidator','ngCookies','ui.bootstrap','ngFileUpload']);
+var mentalmarksman = angular.module('mental_marksman', ['ui.router','angularValidator','ngCookies','ui.bootstrap','ngFileUpload','youtube-embed']);
 
 mentalmarksman.run(['$rootScope', '$state',function($rootScope, $state){
 
@@ -146,6 +146,26 @@ mentalmarksman.config(function($stateProvider, $urlRouterProvider,$locationProvi
             }
         }
     )
+        .state('memberportal',{
+            url:"/member-portal",
+            views: {
+
+                'header': {
+                    templateUrl: 'partial/header.html' ,
+                    controller: 'header'
+                },
+                'footer': {
+                    templateUrl: 'partial/footer.html' ,
+                    controller: 'footer'
+                },
+                'content': {
+                    templateUrl: 'partial/memberportal.html' ,
+                    controller: 'memberportal'
+                },
+
+            }
+        }
+    )
 
         .state('dashboard',{
             url:"/dashboard",
@@ -197,6 +217,56 @@ mentalmarksman.config(function($stateProvider, $urlRouterProvider,$locationProvi
         }
     )
 
+        .state('addvideo',{
+            url:"/addvideo",
+            views: {
+
+                'header': {
+                    templateUrl: 'partial/admin_header.html' ,
+                    controller: 'admin_header'
+                },
+                'left': {
+                    templateUrl: 'partial/admin_left.html' ,
+                    controller: 'admin_left'
+                },
+                'footer': {
+                    templateUrl: 'partial/admin_footer.html' ,
+                    controller: 'admin_footer'
+                },
+                'content': {
+                    templateUrl: 'partial/addvideo.html' ,
+                    controller: 'addvideo'
+                },
+
+            }
+        }
+    )
+
+        .state('videolist',{
+            url:"/video-list",
+            views: {
+
+                'header': {
+                    templateUrl: 'partial/admin_header.html' ,
+                    controller: 'admin_header'
+                },
+                'left': {
+                    templateUrl: 'partial/admin_left.html' ,
+                    controller: 'admin_left'
+                },
+                'footer': {
+                    templateUrl: 'partial/admin_footer.html' ,
+                    controller: 'admin_footer'
+                },
+                'content': {
+                    templateUrl: 'partial/videolist.html' ,
+                    controller: 'videolist'
+                },
+
+            }
+        }
+    )
+
 
     $locationProvider.html5Mode({
         enabled: true,
@@ -206,8 +276,32 @@ mentalmarksman.config(function($stateProvider, $urlRouterProvider,$locationProvi
 
 });
 
+mentalmarksman.directive('ngEnter', function () {
+    return function (scope, element, attrs) {
+        element.bind('keydown keypress', function (event) {
+            if(event.which === 13) {
+                scope.$apply(function (){
+                    scope.$eval(attrs.ngEnter, {$event:event});
+                });
+                event.preventDefault();
+            }
+        });
+    };
+});
 
+mentalmarksman.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance,$rootScope,$http,$cookieStore) {
 
+    $scope.cancel = function () {
+        $uibModalInstance.dismiss('cancel');
+    };
+
+    $scope.addYtVideo = function(item){
+        $uibModalInstance.dismiss('cancel');
+        $scope.form.videoId = (item.id.videoId);
+
+    }
+
+});
 
 mentalmarksman.controller('index', function($scope,$state,$cookieStore) {
     $state.go('home');
@@ -482,5 +576,133 @@ mentalmarksman.controller('customerlist', function($scope,$state,$cookieStore,$r
     });
 
 });
+
+mentalmarksman.controller('addvideo', function($scope,$state,$cookieStore,$rootScope,$http,$uibModal) {
+
+    $scope.form = {
+        videoId : ''
+    };
+
+    $scope.videoValidator = function(videoId) {
+
+        if (videoId == '') {
+            return "Please Search & Add Youtube Video";
+        }
+
+        return true;
+    };
+
+    $scope.youtubeSearch = function(event){
+        if(event.type == 'keydown'){
+            var searchval = event.currentTarget.value;
+            if(searchval != ''){
+                var dataurl = 'https://www.googleapis.com/youtube/v3/search?part=snippet&q='+searchval+'&maxResults=10&key=AIzaSyANefU-R8cD3udZvBqbDPqst7jMKvB_Hvo';
+
+                $rootScope.stateIsLoading = true;
+
+                $http.get(dataurl).success(function(data){
+
+                    $scope.vids = [];
+
+                    angular.forEach(data.items, function(value, key){
+                        if(typeof (value.id.videoId) != 'undefined'){
+                            $scope.vids.push(value);
+                        }
+                    });
+                    $rootScope.stateIsLoading = false;
+
+                    $uibModal.open({
+                        animation: true,
+                        templateUrl: 'videoList.html',
+                        controller: 'ModalInstanceCtrl',
+                        size: 'lg',
+                        scope: $scope
+                     });
+
+                });
+            }
+        }
+    };
+
+    $scope.addvideo = function(){
+        $rootScope.stateIsLoading = true;
+        $http({
+            method  : 'POST',
+            async:   false,
+            url     : $scope.adminUrl+'/addvideo',
+            data    : $.param($scope.form),  // pass in data as strings
+            headers : { 'Content-Type': 'application/x-www-form-urlencoded' }
+        }) .success(function(data) {
+            $rootScope.stateIsLoading = true;
+
+            $state.go('videolist');
+            return;
+        });
+    }
+
+    $rootScope.showYoutubevdo = function(id,value){
+        angular.element( document.querySelector( '#youtubeBody'+id ) ).html('<iframe width="100%" height="100%" src="https://www.youtube.com/embed/'+value+'?rel=0&autoplay=1" frameborder="0" allowfullscreen></iframe>');
+    }
+
+});
+
+mentalmarksman.controller('videolist', function($scope,$state,$cookieStore,$rootScope,$http) {
+    $scope.currentPage=1;
+    $scope.perPage=3;
+    $scope.begin=0;
+
+    $scope.setPage = function (pageNo) {
+        $scope.currentPage = pageNo;
+    };
+
+    $scope.pageChanged = function(){
+        $scope.begin=parseInt($scope.currentPage-1)*$scope.perPage;
+        $scope.videolistP = $scope.videolist.slice($scope.begin, parseInt($scope.begin+$scope.perPage));
+    }
+    $http({
+        method  : 'POST',
+        async:   false,
+        url     : $scope.adminUrl+'/videolist',
+        //data    : $.param($scope.form),  // pass in data as strings
+        headers : { 'Content-Type': 'application/x-www-form-urlencoded' }
+    }) .success(function(data) {
+        $scope.videolist = data;
+        $scope.videolistP = $scope.videolist.slice($scope.begin, parseInt($scope.begin+$scope.perPage));
+    });
+
+    $rootScope.showYoutubevdo = function(id,value){
+        angular.element( document.querySelector( '#youtubeBody'+id ) ).html('<iframe width="100%" height="100%" src="https://www.youtube.com/embed/'+value+'?rel=0&autoplay=1" frameborder="0" allowfullscreen></iframe>');
+    }
+});
+
+mentalmarksman.controller('memberportal', function($scope,$state,$cookieStore,$rootScope,$http) {
+    $scope.currentPage=1;
+    $scope.perPage=6;
+    $scope.begin=0;
+
+    $scope.setPage = function (pageNo) {
+        $scope.currentPage = pageNo;
+    };
+
+    $scope.pageChanged = function(){
+        $scope.begin=parseInt($scope.currentPage-1)*$scope.perPage;
+        $scope.videolistP = $scope.videolist.slice($scope.begin, parseInt($scope.begin+$scope.perPage));
+    }
+    $http({
+        method  : 'POST',
+        async:   false,
+        url     : $scope.adminUrl+'/videolist',
+        //data    : $.param($scope.form),  // pass in data as strings
+        headers : { 'Content-Type': 'application/x-www-form-urlencoded' }
+    }) .success(function(data) {
+        $scope.videolist = data;
+        $scope.videolistP = $scope.videolist.slice($scope.begin, parseInt($scope.begin+$scope.perPage));
+    });
+
+    $rootScope.showYoutubevdo = function(id,value){
+        angular.element( document.querySelector( '#youtubeBody'+id ) ).html('<iframe width="100%" height="100%" src="https://www.youtube.com/embed/'+value+'?rel=0&autoplay=1" frameborder="0" allowfullscreen></iframe>');
+    }
+});
+
 
 
